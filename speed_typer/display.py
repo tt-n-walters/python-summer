@@ -1,10 +1,12 @@
+from turtle import speed
 import pygame
 import time
+import speedtyper
 pygame.init()
 
 
 def start_menu():
-    global name, name_text
+    global name, name_text, state
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()
@@ -16,6 +18,12 @@ def start_menu():
             else:
                 name += event.unicode
             name_text = font.render(name, True, (0, 0, 0))
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            x, y = pygame.mouse.get_pos()
+            print(x, y)
+            if 300 < x < 500 and 440 < y < 520:
+                state = 1
+
 
     # Background
     screen.fill((200, 250, 255))
@@ -69,6 +77,8 @@ def main():
     # Actual sentence
     pygame.draw.rect(screen, (255, 166, 105), (40, 150, 720, 120))
     pygame.draw.rect(screen, (255, 241, 179), (50, 160, 700, 100))
+    sentence_text = font.render(speedtyper.sentence, True, (0, 0, 0))
+    screen.blit(sentence_text, (50, 160))
     
     # User sentence
     pygame.draw.rect(screen, (152, 244, 255), (40, 350, 720, 120))
@@ -106,8 +116,15 @@ start_button_text = font.render("S T A R T", True, (255, 255, 255))
 name = ""
 user_sentence = ""
 start_time = time.time()
+state = 0
+
+speedtyper.download_sentences()
+speedtyper.read_sentences()
+speedtyper.pick_sentence()
 
 while True:
-    # start_menu()
-    main()
+    if state == 0:
+        start_menu()
+    if state == 1:
+        main()
     
