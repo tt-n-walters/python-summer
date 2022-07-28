@@ -55,3 +55,13 @@ def calculate_stuff():
     accuracy = rapidfuzz.distance.Levenshtein_py.normalized_similarity(sentence, attempt)
     accuracy = str(round(accuracy * 100, 1)) + "%"
     print("Accuracy:", accuracy)
+
+
+def split_sentence(maximum_length):
+    # Find the closest space to length that fits
+    wrap = sentence.rindex(" ", 0, maximum_length)
+    # Select the part of the string from the start until the space
+    # Select the part of the string from the space until the end
+
+    lines = [sentence[0 : wrap], sentence[wrap + 1: len(sentence)]]
+    return lines
