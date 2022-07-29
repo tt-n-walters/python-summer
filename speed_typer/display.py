@@ -1,6 +1,8 @@
 import pygame
 import time
 import speedtyper
+import sys
+
 pygame.init()
 
 
@@ -9,7 +11,7 @@ def start_menu():
     global name, name_text, state
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            exit()
+            sys.exit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_BACKSPACE:
                 # remove the last letter typed
@@ -23,15 +25,15 @@ def start_menu():
         if event.type == pygame.MOUSEBUTTONDOWN:
             x, y = pygame.mouse.get_pos()
             if 300 < x < 500 and 440 < y < 520:
-                pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
                 state = 1
+                pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
                 return
 
     x, y = pygame.mouse.get_pos()
     if 300 < x < 500 and 440 < y < 520:
         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
-        button_colour = (213, 255, 80)
-        button_border_colour = (136, 207, 26)
+        button_colour = (60, 190, 30)
+        button_border_colour = (125, 255, 80)
     else:
         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
         button_colour = (125, 255, 80)
@@ -65,7 +67,7 @@ def main():
     # Events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            exit()
+            sys.exit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_BACKSPACE:
                 # remove the last letter typed
@@ -73,6 +75,8 @@ def main():
                 user_sentence = user_sentence[:-1]
             elif event.key == pygame.K_RETURN:
                 state = 2
+                pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+                return
             else:
                 user_sentence += event.unicode
             user_sentence_text = font.render(user_sentence, True, (0, 0, 0))
@@ -130,7 +134,7 @@ def results():
     global has_calculated, stuff, cpm_text, accuracy_text, user_name_text
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            exit()
+            sys.exit()
         elif event.type == pygame.MOUSEBUTTONDOWN:
             x, y = pygame.mouse.get_pos()
             if 110 < x < 310 and 460 < y < 520:
@@ -141,6 +145,25 @@ def results():
                 return
 
 
+    x, y = pygame.mouse.get_pos()
+    cursor = pygame.SYSTEM_CURSOR_ARROW
+    if 110 < x < 310 and 460 < y < 520:
+        cursor = pygame.SYSTEM_CURSOR_HAND
+        button_menu_colour = (73, 163, 246)
+        button_menu_border_colour = (56, 106, 209)
+    else:
+        button_menu_colour = (56, 106, 209)
+        button_menu_border_colour = (73, 163, 246)
+
+    if 490 < x < 690 and 460 < y < 520:
+        cursor = pygame.SYSTEM_CURSOR_HAND
+        button_retry_colour = (255, 250, 73)
+        button_retry_border_colour = (255, 217, 43)
+    else:
+        button_retry_colour = (255, 217, 43)
+        button_retry_border_colour = (255, 250, 73)
+    pygame.mouse.set_cursor(cursor)
+    
     if has_calculated == False:
         stuff = speedtyper.calculate_stuff(user_sentence, time.time() - start_time)
         cpm_text = "Characters per minute: "  + str(stuff[0]) + " cpm"
@@ -159,13 +182,13 @@ def results():
     screen.blit(cpm_text, (400 - cpm_text.get_width() / 2, 200))
     screen.blit(accuracy_text, (400 - accuracy_text.get_width() / 2, 250))
     # Menu button
-    pygame.draw.rect(screen, (73, 163, 246), (100, 450, 220, 80))
-    pygame.draw.rect(screen, (56, 106, 209), (110, 460, 200, 60))
+    pygame.draw.rect(screen, button_menu_border_colour, (100, 450, 220, 80))
+    pygame.draw.rect(screen, button_menu_colour, (110, 460, 200, 60))
     screen.blit(font.render("MENU", True, (255, 255, 255)), (210 - 45, 465))
 
     # Retry button
-    pygame.draw.rect(screen, (255, 250, 73), (480, 450, 220, 80))
-    pygame.draw.rect(screen, (255, 217, 43), (490, 460, 200, 60))
+    pygame.draw.rect(screen, button_retry_border_colour, (480, 450, 220, 80))
+    pygame.draw.rect(screen, button_retry_colour, (490, 460, 200, 60))
     screen.blit(font.render("RETRY", True, (255, 255, 255)), (590 - 45, 465))
 
     pygame.display.flip()
@@ -178,11 +201,11 @@ height = 600
 size = width, height
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Speed Typer")
-pygame.display.set_icon(pygame.image.load("speed_typer/icon.png"))
+pygame.display.set_icon(pygame.image.load(sys._MEIPASS + "/icon.png"))
 
 
-font = pygame.font.Font("speed_typer/CarterOne-Regular.ttf", 32)
-timer_font = pygame.font.Font("speed_typer/Teko-Regular.ttf", 48)
+font = pygame.font.Font(sys._MEIPASS + "/CarterOne-Regular.ttf", 32)
+timer_font = pygame.font.Font(sys._MEIPASS + "/Teko-Regular.ttf", 48)
 
 enter_name_rect = pygame.Rect(310, 90, 180, 70)
 enter_name_border = pygame.Rect(305, 85, 190, 80)
@@ -204,6 +227,7 @@ def setup(state_chosen = 0, name_chosen = ""):
     has_typed_before = False
     has_calculated = False
     speedtyper.pick_sentence()
+    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
 
 speedtyper.download_sentences()
