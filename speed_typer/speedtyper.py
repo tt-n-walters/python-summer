@@ -1,13 +1,15 @@
+import sys
+
 # Download the sentences, and save to a file on the disk
 def download_sentences():
     import os
-    if not os.path.exists("sentences.txt"):
+    if not os.path.exists(sys._MEIPASS + "/sentences.txt"):
         import requests
         url = "https://python.techtalents.cloud/sentences"
         print("Downloading sentences....")
         downloaded = requests.get(url).text
         print("Finished downloading.")
-        file = open("sentences.txt", "wt", newline="\n")
+        file = open(sys._MEIPASS + "/sentences.txt", "wt", newline="\n")
         file.write(downloaded)
         file.close()
 
@@ -15,7 +17,7 @@ def download_sentences():
 # Read the file into a variable
 def read_sentences():
     global sentences
-    file = open("sentences.txt", "rt")
+    file = open(sys._MEIPASS + "/sentences.txt", "rt")
     contents = file.read()
     file.close()
 
@@ -31,19 +33,15 @@ def pick_sentence():
 
     while True:
         sentence = random.choice(sentences)
-        if 60 < len(sentence) < 100:
+        if 60 < len(sentence) < 80:
             break
     print(sentence)
 
 
 # Allow the user to type their attempt, measure time taken
-def calculate_stuff():
+def calculate_stuff(attempt, time_taken):
     global cpm, accuracy
-    import time
-    start = time.time()
-    attempt = input()
-    end = time.time()
-    time_taken = round(end - start, 2)
+
     # Characters per minute
     cpm = round(len(attempt) / time_taken * 60, 1)
 
@@ -55,9 +53,11 @@ def calculate_stuff():
     accuracy = rapidfuzz.distance.Levenshtein_py.normalized_similarity(sentence, attempt)
     accuracy = str(round(accuracy * 100, 1)) + "%"
     print("Accuracy:", accuracy)
+    
+    return [cpm, accuracy]
 
 
-def split_sentence(maximum_length):
+def split_sentence(sentence, maximum_length):
     # Find the closest space to length that fits
     wrap = sentence.rindex(" ", 0, maximum_length)
     # Select the part of the string from the start until the space
